@@ -73,9 +73,10 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		$.ajax( {
 			method: 'POST',
 			url: '//dev.realbigplugins.com/wp-json/pyis/v1/helpscout/dpd/regenerate-data',
-			data: {
+			contentType: 'application/json',
+			data: JSON.stringify( {
 				'helpscout_data': $( '#dpd-helpscout-data' ).text(), // Need to send as text to ensure our hashes line up
-			},
+			} ),
 			beforeSend: function( xhr ) { 
 				xhr.setRequestHeader( 'X-HELPSCOUT-SIGNATURE', helpscoutSecretKey );
 			},
