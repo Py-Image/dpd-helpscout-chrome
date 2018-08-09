@@ -17,13 +17,11 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 
 		var checkForHelpScoutAppLoad = setInterval( function() {
 
-			if ( $( 'li[id$="dpd-urls"]' ).length ) {
+			if ( $( '#dpd-helpscout-content' ).length ) {
 
 				clearInterval( checkForHelpScoutAppLoad );
-
-				console.log( 'App Loaded' );
-
-				convertToForms( $( 'li[id$="dpd-urls"]' ) );
+				
+				$( document ).trigger( 'dpd-helpscout-app-loaded', [ $( '#dpd-helpscout-content' ) ] );
 
 			}
 
@@ -31,15 +29,31 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 
 	};
 
+	/**
+	 * Convert <div> forms passed into HelpScout into real <form>s
+	 * 
+	 * @param {object} $appContainer jQuery DOM Object
+	 *                               
+	 * @since {{VERSION}}
+	 * @return void
+	 */
 	function convertToForms( $appContainer ) {
 
-		$appContainer.find( '.dpd-form' ).each( function( index, form ) {
+		$appContainer.find( '.dpd-form:not(form)' ).each( function( index, form ) {
 			
-			$( form ).pyisDpdChangeElementType( 'form' );
+			$( form ).pyisDpdChangeElementType( 'form' ).find( '.button-container' ).show();
 			
 		} );
 
 	}
+	
+	$( document ).on( 'dpd-helpscout-app-loaded', function( event, $appContainer ) {
+		
+		convertToForms( $appContainer );
+		
+		$( '#dpd-helpscout-chrome-extension-loading' ).slideUp();
+		
+	} );
 	
 	$( document ).on( 'click', '.dpd-form .dpd-regenerate', function( event ) {
 		
@@ -54,7 +68,7 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		
 		event.preventDefault();
 		
-		var helpscoutSecretKey = $( this ).find( '.helpscout-secret-key' ).text();
+		var helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text();
 		
 		$.ajax( {
 			method: 'POST',
