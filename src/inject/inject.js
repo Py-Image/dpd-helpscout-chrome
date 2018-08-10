@@ -17,11 +17,13 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 
 		var checkForHelpScoutAppLoad = setInterval( function() {
 
-			if ( $( '#dpd-helpscout-content' ).length ) {
+			if ( $( '#dpd-helpscout-content:not(.chrome-extension-loaded)' ).length ) {
 
 				clearInterval( checkForHelpScoutAppLoad );
 				
 				$( document ).trigger( 'dpd-helpscout-app-loaded', [ $( '#dpd-helpscout-content' ) ] );
+				
+				$( '#dpd-helpscout-content' ).addClass( 'chrome-extension-loaded' );
 
 			}
 
@@ -39,7 +41,15 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 	 */
 	function convertToForms( $appContainer ) {
 
-		$appContainer.find( '.dpd-form:not(form)' ).each( function( index, form ) {
+		$appContainer.find( '.dpd-form:not(form)' ).each( function( formIndex, form ) {
+			
+			$( form ).find( 'a.dpd-submit' ).each( function( buttonIndex, link ) {
+				
+				let text = $( link ).text();
+				
+				$( link ).pyisDpdChangeElementType( 'input' ).attr( 'type', 'submit' ).attr( 'value', text ).removeAttr( 'target' );
+				
+			} );
 			
 			$( form ).pyisDpdChangeElementType( 'form' ).find( '.button-container' ).show();
 			
@@ -55,34 +65,31 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		
 	} );
 	
-	$( document ).on( 'click', '.dpd-form .dpd-regenerate', function( event ) {
-		
-		event.preventDefault();
-		
-		// Only try to submit if the Form was converted
-		$( this ).closest( 'form.dpd-form' ).submit();
-		
-	} );
-	
 	$( document ).on( 'submit', 'form.dpd-form', function( event ) {
 		
 		event.preventDefault();
 		
-		var helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text();
+		var endpoint = $( document.activeElement ).attr( 'id' ).replace( /^dpd_endpoint_/i, '' ),
+			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text();
 		
 		$.ajax( {
 			method: 'POST',
-			url: '//dev.realbigplugins.com/wp-json/pyis/v1/helpscout/dpd/regenerate-data',
+			url: '//dev.realbigplugins.com/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
 			contentType: 'application/json',
 			data: JSON.stringify( {
 				'helpscout_data': $( '#dpd-helpscout-data' ).text(), // Need to send as text to ensure our hashes line up
+				'customer_id': $( this ).find( '.customer_id' ).text(),
+				'purchase_id': $( this ).find( '.purchase_id' ).text(),
 			} ),
 			beforeSend: function( xhr ) { 
 				xhr.setRequestHeader( 'X-HELPSCOUT-SIGNATURE', helpscoutSecretKey );
 			},
 			success: function( response ) {
-				console.log( response );	
+				alert( response.html );	
 			},
+			error: function( XMLHttpRequest, textStatus, errorThrown ) {
+				alert( XMLHttpRequest.responseJSON.html );
+			}
 		} );
 		
 	} );
