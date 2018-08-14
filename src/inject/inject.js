@@ -72,6 +72,8 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		var endpoint = $( document.activeElement ).attr( 'id' ).replace( /^dpd_endpoint_/i, '' ),
 			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text();
 		
+		$( 'input.dpd-submit' ).attr( 'disabled', true ).removeClass( 'green' ).css( 'color', '#a5b2bd' );
+		
 		$.ajax( {
 			method: 'POST',
 			url: '//dev.realbigplugins.com/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
@@ -85,10 +87,18 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 				xhr.setRequestHeader( 'X-HELPSCOUT-SIGNATURE', helpscoutSecretKey );
 			},
 			success: function( response ) {
-				alert( response.html );	
+				
+				alert( response.html );
+				
+				$( 'input.dpd-submit' ).attr( 'disabled', false ).addClass( 'green' ).css( 'color', '' );
+				
 			},
 			error: function( XMLHttpRequest, textStatus, errorThrown ) {
+				
+				$( 'input.dpd-submit' ).attr( 'disabled', false ).addClass( 'green' ).css( 'color', '' );
+				
 				alert( XMLHttpRequest.responseJSON.html );
+				
 			}
 		} );
 		
