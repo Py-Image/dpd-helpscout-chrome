@@ -76,7 +76,7 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		
 		$.ajax( {
 			method: 'POST',
-			url: '//dev.realbigplugins.com/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
+			url: '//ash.pyimagesearch.com/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
 			contentType: 'application/json',
 			data: JSON.stringify( {
 				'helpscout_data': $( '#dpd-helpscout-data' ).text(), // Need to send as text to ensure our hashes line up
