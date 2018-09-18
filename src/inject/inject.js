@@ -89,7 +89,12 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 			},
 			success: function( response ) {
 				
-				alert( response.html );
+				if ( response.hasOwnProperty( 'copy' ) ) {
+					prompt( response.html, response.copy );
+				}
+				else {
+					alert( response.html );
+				}
 				
 				$( 'input.dpd-submit' ).attr( 'disabled', false ).addClass( 'green' ).css( 'color', '' );
 				
