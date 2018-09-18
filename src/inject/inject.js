@@ -70,13 +70,14 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		event.preventDefault();
 		
 		var endpoint = $( document.activeElement ).attr( 'id' ).replace( /^dpd_endpoint_/i, '' ),
-			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text();
+			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text(),
+			url = $( '#dpd-helpscout-url' ).text();
 		
 		$( 'input.dpd-submit' ).attr( 'disabled', true ).removeClass( 'green' ).css( 'color', '#a5b2bd' );
 		
 		$.ajax( {
 			method: 'POST',
-			url: '//jobs.pyimagesearch.com/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
+			url: url + '/wp-json/pyis/v1/helpscout/dpd/' + endpoint,
 			contentType: 'application/json',
 			data: JSON.stringify( {
 				'helpscout_data': $( '#dpd-helpscout-data' ).text(), // Need to send as text to ensure our hashes line up
