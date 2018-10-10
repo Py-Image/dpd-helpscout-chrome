@@ -69,6 +69,12 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		
 		event.preventDefault();
 		
+		console.log( 'document.activeElement' );
+		console.log( document.activeElement );
+		
+		console.log( "document.activeElement's ID" );
+		console.log( $( document.activeElement ).attr( 'id' ) );
+		
 		var endpoint = $( document.activeElement ).attr( 'id' ).replace( /^dpd_endpoint_/i, '' ),
 			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text(),
 			url = $( '#dpd-helpscout-url' ).text();
