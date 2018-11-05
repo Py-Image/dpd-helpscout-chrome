@@ -69,9 +69,14 @@ $.fn.pyisDpdChangeElementType = function(newType) {
 		
 		event.preventDefault();
 		
-		var endpoint = $( document.activeElement ).attr( 'id' ).replace( /^dpd_endpoint_/i, '' ),
+		var classes = $( document.activeElement ).attr( 'class' ),
+			endpoint = classes.match( /dpd_endpoint_\S+/ ),
 			helpscoutSecretKey = $( '#dpd-helpscout-secret-key' ).text(),
 			url = $( '#dpd-helpscout-url' ).text();
+		
+		if ( endpoint === null ) return;
+		
+		endpoint = endpoint[0].replace( 'dpd_endpoint_', '' );
 		
 		$( 'input.dpd-submit' ).attr( 'disabled', true ).removeClass( 'green' ).css( 'color', '#a5b2bd' );
 		
